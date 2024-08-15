@@ -60,7 +60,8 @@ class FR3MuJocoEnv:
 
         self.data.ctrl[:] = frc_applied
         mujoco.mj_step(self.model, self.data)
-        self.viewer.sync()
+        if self.render:
+            self.viewer.sync()
 
         q, dq = self.data.qpos[:9].copy(), self.data.qvel[:9].copy()
         self.update_pinocchio(q, dq)
@@ -69,7 +70,8 @@ class FR3MuJocoEnv:
         return info
 
     def close(self):
-        self.viewer.close()
+        if self.render:
+            self.viewer.close()
 
     def sleep(self, start_time):
         time_until_next_step = self.model.opt.timestep - (time.time() - start_time)
